@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Callback from "./Callback";
+import pkceChallenge from "pkce-challenge"
 
 export interface LoginConfig {
     domain: string;
@@ -12,12 +13,19 @@ export interface LoginConfig {
 
 const Login = (config: LoginConfig) => {
 
+
     const redirect = () => {
+        const pkce = pkceChallenge(128);
+        localStorage.setItem("code_challenge", pkce.code_challenge);
+        localStorage.setItem("code_verifier", pkce.code_verifier);
+
         const url = `https://${config.domain}.auth.${config.region}.amazoncognito.com/login?`
             .concat(`client_id=`, config.client_id)
             .concat(`&response_type=`, config.response_type)
             .concat(`&scope=`, config.scope.join(`+`))
-            .concat(`&redirect_uri=`, config.redirect_uri);
+            .concat(`&redirect_uri=`, config.redirect_uri)
+            .concat('&code_challenge=', pkce.code_challenge)
+            .concat('&code_challenge_method=', "S256");
 
             window.location.href = url;
     }
@@ -25,7 +33,7 @@ const Login = (config: LoginConfig) => {
     return (
         <div>
             <Routes>
-                <Route path="/callback" element={<Callback />}/>
+                <Route path="/callback" element={<Callback {...config}/>}/>
             </Routes>
                 
             <button onClick={redirect}>Login</button>
