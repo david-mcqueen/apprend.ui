@@ -13,8 +13,12 @@ export interface LoginConfig {
 
 const Login = (config: LoginConfig) => {
 
+    //ToDo:- Create some sort of wrapper for all of this to make it easier to use and have some "protected" areas of the site
 
     const redirect = () => {
+
+        // ToDo:- oAuth state
+
         const pkce = pkceChallenge(128);
         localStorage.setItem("code_challenge", pkce.code_challenge);
         localStorage.setItem("code_verifier", pkce.code_verifier);
