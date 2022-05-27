@@ -16,12 +16,13 @@ const Query = () => {
 
     useEffect(() => {
         const httpLink = createHttpLink({
-            uri: 'https://opdezv66u5gb3aqmtpvqcfhvuy.appsync-api.eu-west-2.amazonaws.com/graphql',
+            uri: 'https://25sro6ugqjhslkekpc4ozezqx4.appsync-api.eu-west-2.amazonaws.com/graphql',
         });
 
         const authLink = setContext((_, { headers }) => {
         // get the authentication token from local storage if it exists
         const token = localStorage.getItem('access_token');
+        
         
         // return the headers to the context so httpLink can read them
         return {
@@ -40,8 +41,14 @@ const Query = () => {
           client
             .query({
                 query: gql`
-                query MyQuery {
-                    getVerbs
+                query Query {
+                    getCategory(category: "en#fr#communication") {
+                      verbs {
+                        group
+                        name
+                        translation
+                      }
+                    }
                   }              
                 `
             })

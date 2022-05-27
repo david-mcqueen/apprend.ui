@@ -1,13 +1,14 @@
 import image from './images/dmitry-ratushny-unsplash.jpg';
 import './App.css';
 import Query from './pages/query';
-import Login, { LoginConfig } from './pages/Login';
+import Login, { AuthConfig } from './pages/Login';
 import { Route, Routes } from 'react-router-dom';
+import Auth from './auth/auth';
 
 function App() {
 
-  const loginConfig: LoginConfig = {
-    client_id: "5s4n5nkmqrh88a05s1c8der32c",
+  const loginConfig: AuthConfig = {
+    client_id: "5mvm8k5aedv1erv99nn6g203d3",
     domain: "apprend",
     region: "eu-west-2",
     redirect_uri: "http://localhost:3000/callback",
@@ -15,13 +16,15 @@ function App() {
     scope: ["email", "openid", "profile"]
   }
 
+  const auth = new Auth(loginConfig);
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={image} className="landing-image" alt="logo" />
       </header>
       <Login 
-        {...loginConfig}/>
+        {...auth}/>
         <Routes>
           <Route path="/query" element={<Query />} />
           
