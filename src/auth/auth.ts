@@ -1,4 +1,3 @@
-import { AuthConfig } from "../pages/Login";
 import pkceChallenge, { verifyChallenge } from "pkce-challenge";
 import axios from "axios";
 import qs from "qs";
@@ -8,21 +7,53 @@ type AuthedUser = {
     AccessToken: string;
 }
 
-export default class Auth {
-    private _config: AuthConfig;
-    
-    constructor(config: AuthConfig) {
-        this._config = config;
+export interface AuthConfig {
+    domain: string;
+    region: string;
+    client_id: string;
+    response_type: string;
+    scope: string[];
+    redirect_uri: string;
+}
+
+const getEnvString = (envName: string) : string => {
+    const val = process.env[`REACT_APP_${envName}`];
+    if (!val){
+        throw new Error(`Unable to get env variable: ${envName}`)
     }
 
-    getAuthedUser(): AuthedUser {
+    return val;
+}
+
+const getEnvStringArray = (envName: string): string[] => {
+    debugger;
+    const val = getEnvString(envName);
+    // TODO:- 
+    return [];
+}
+
+// As part of the constructor, this gets its auth stuff from env variables
+// so that it can be creatred from anywehre, even outside of the wrapper and no one place needs to pass the config in
+// Thius can then be used by the wrapper, but also by other things (such as callback / graphql) to get the token when doing API calls
+
+export default class Auth {
+    private static _config: AuthConfig = {
+        domain: getEnvString('DOMAIN'),
+        client_id: getEnvString('CLIENT_ID'),
+        redirect_uri: getEnvString('REDIRECT_URL'),
+        region: getEnvString('REGION'),
+        response_type: getEnvString('RESPONSE_TYPE'),
+        scope: getEnvStringArray('SCOPE')
+    }
+
+    public static GetAuthedUser(): AuthedUser {
         return {
             Name: "Test User",
             AccessToken: "access_token"
         }
     }
 
-    getLoginUrl(): string {
+    public static GetLoginUrl(): string {
         const pkce = pkceChallenge(128);
         localStorage.setItem("code_challenge", pkce.code_challenge);
         localStorage.setItem("code_verifier", pkce.code_verifier);
@@ -39,7 +70,7 @@ export default class Auth {
     }
 
 
-    exchangeCodeForToken(code: string) {
+    public static ExchangeCodeForToken(code: string) {
         const codeVerifier = localStorage.getItem("code_verifier");
         const codeChallenge = localStorage.getItem("code_challenge");
 

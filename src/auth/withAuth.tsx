@@ -1,4 +1,4 @@
-import { Component, ComponentType, useEffect } from "react";
+import { Component, ComponentType } from "react";
 
 export function withAuth<T> (WrappedComponent: ComponentType<T>) {
 
@@ -8,7 +8,7 @@ export function withAuth<T> (WrappedComponent: ComponentType<T>) {
         }
 
         componentWillMount() {
-            const getToken = localStorage.getItem('token'); 
+            const activeUser = localStorage.getItem('user'); 
             // if(!getToken) { 
             //    this.props.history.replace({pathname: '/'}); 
             // } 

@@ -1,12 +1,9 @@
-import axios from "axios";
-import qs from "qs";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Auth from "../auth/auth";
-import { AuthConfig } from "./Login";
 
 
-const Callback = (auth: Auth) => {
+const Callback = () => {
     let location = useLocation();
 
     useEffect(() => {
@@ -17,7 +14,7 @@ const Callback = (auth: Auth) => {
             throw Error("No code returned!")
         }
 
-        // Auth.exchangeCodeForToken(code);
+        Auth.ExchangeCodeForToken(code);
         
     }, []);
 
