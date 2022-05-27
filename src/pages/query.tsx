@@ -9,6 +9,7 @@ import {
 
   import { setContext } from '@apollo/client/link/context';
 import { useEffect, useState } from "react";
+import { withAuth } from "../auth/withAuth";
 
 const Query = () => {
 
@@ -58,5 +59,5 @@ const Query = () => {
     return (<>{verbs}</>)
 } 
 
-export default Query;
+export default withAuth(Query);
 

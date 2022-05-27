@@ -26,10 +26,8 @@ const getEnvString = (envName: string) : string => {
 }
 
 const getEnvStringArray = (envName: string): string[] => {
-    debugger;
     const val = getEnvString(envName);
-    // TODO:- 
-    return [];
+    return JSON.parse(val);
 }
 
 // As part of the constructor, this gets its auth stuff from env variables
@@ -47,9 +45,10 @@ export default class Auth {
     }
 
     public static GetAuthedUser(): AuthedUser {
+        // ToDo:- 
         return {
             Name: "Test User",
-            AccessToken: "access_token"
+            AccessToken: localStorage.getItem('access_token') || ''
         }
     }
 
