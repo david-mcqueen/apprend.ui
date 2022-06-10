@@ -7,12 +7,14 @@ import {
 
 import { setContext } from '@apollo/client/link/context';
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Auth from "../auth/auth";
 import { withAuth } from "../auth/withAuth";
 
 const Deck = () => {
 
     const [verbs, setVerbs] = useState<string>();
+    const {deck} = useParams();
 
     useEffect(() => {
         const httpLink = createHttpLink({
@@ -20,17 +22,15 @@ const Deck = () => {
         });
 
         const authLink = setContext(async (_, { headers }) => {
-        // get the authentication token from local storage if it exists
-        const token = localStorage.getItem('access_token');
-        const authedUser = await Auth.GetAuthedUser();
-        
-        // return the headers to the context so httpLink can read them
-        return {
-            headers: {
-            ...headers,
-            authorization: authedUser.AccessToken,
-            }
-        }
+          const authedUser = await Auth.GetAuthedUser();
+          
+          // return the headers to the context so httpLink can read them
+          return {
+              headers: {
+              ...headers,
+              authorization: authedUser.AccessToken,
+              }
+          }
         });
 
         const client = new ApolloClient({
@@ -42,7 +42,7 @@ const Deck = () => {
             .query({
                 query: gql`
                 query Query {
-                    getCategory(category: "en#fr#communication") {
+                    getCategory(category: "en#fr#${deck}") {
                       verbs {
                         group
                         name
@@ -57,16 +57,6 @@ const Deck = () => {
 
     return (
       <>
-      <div>
-        <ul>
-          <li>
-            Communication
-          </li>
-          <li>
-            
-          </li>
-        </ul>
-      </div>
         {verbs}
       </>
     )

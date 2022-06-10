@@ -14,7 +14,7 @@ function App() {
         <img src={image} className="landing-image" alt="logo" />
       </header>
         <Routes>
-          <Route path="/deck" element={<Deck />} />
+          <Route path="/deck/:deck" element={<Deck />} />
           
         </Routes>
     </div>
