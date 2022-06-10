@@ -63,4 +63,3 @@ const Deck = () => {
 } 
 
 export default withAuth(Deck);
-
