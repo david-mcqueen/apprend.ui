@@ -1,10 +1,26 @@
 import pkceChallenge, { verifyChallenge } from "pkce-challenge";
 import axios from "axios";
 import qs from "qs";
+import jwtDecode from "jwt-decode";
 
-type AuthedUser = {
-    Name: string;
+export type AuthedUser = {
+    UserName: string;
     AccessToken: string;
+    jwt: jwtAuth;
+}
+
+type jwtAuth = {
+    iss: string,
+    version: number,
+    client_id: string,
+    origin_jti: string,
+    token_use: string,
+    scope: string,
+    auth_time: number,
+    exp: number,
+    iat: number,
+    jti: string,
+    username: string
 }
 
 export interface AuthConfig {
@@ -30,10 +46,6 @@ const getEnvStringArray = (envName: string): string[] => {
     return JSON.parse(val);
 }
 
-// As part of the constructor, this gets its auth stuff from env variables
-// so that it can be creatred from anywehre, even outside of the wrapper and no one place needs to pass the config in
-// Thius can then be used by the wrapper, but also by other things (such as callback / graphql) to get the token when doing API calls
-
 export default class Auth {
     private static _config: AuthConfig = {
         domain: getEnvString('DOMAIN'),
@@ -44,13 +56,85 @@ export default class Auth {
         scope: getEnvStringArray('SCOPE')
     }
 
-    public static GetAuthedUser(): AuthedUser {
-        // ToDo:- 
+    public static DestroyTokens(): void {
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('refresh_token')
+        localStorage.removeItem('token_expires_in')
+    }
+
+    public static async GetAuthedUser(): Promise<AuthedUser> {
+
+        const accessToken = localStorage.getItem('access_token');
+        if (!accessToken){
+            throw new Error('Unauthorised');
+        }
+        let decoded: jwtAuth = jwtDecode(accessToken);
+
+        if (!this.tokenIsValid(decoded)) {
+            const newAccessToken = await this.refreshToken();
+            decoded = jwtDecode(newAccessToken);
+        }
+
         return {
-            Name: "Test User",
-            AccessToken: localStorage.getItem('access_token') || ''
+            UserName: decoded.username,
+            AccessToken:  accessToken,
+            jwt: decoded
         }
     }
+
+    private static tokenIsValid(token: jwtAuth): boolean {
+        if (token.exp){
+            var expireDateTime = new Date(token.exp * 1000);
+            return expireDateTime > new Date();
+        }
+
+        return false;
+    }
+
+    private static async refreshToken(): Promise<string>{
+        // ToDo:- Use the refresh token to get a new access token and return it in its raw form
+        const refreshToken = localStorage.getItem('refresh_token');
+        const data = {
+            grant_type: "refresh_token",
+            client_id: this._config.client_id,
+            refresh_token: refreshToken,
+        }
+
+        const options = {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            data: qs.stringify(data),
+            url: `https://${this._config.domain}.auth.${this._config.region}.amazoncognito.com/oauth2/token`
+        }
+        return await axios(options)
+            .then (resp => {                
+                console.log(resp);
+                this.storeAccessToken(resp.data.access_token, resp.data.expires_in);
+                return resp.data.access_token;
+            })
+            .catch(err => {
+                console.log(err);
+                throw new Error(JSON.stringify(err));
+            });
+    }
+
+    private static storeAccessToken(accessToken: string, expires_in: string): void {
+        localStorage.setItem("access_token", accessToken);
+        localStorage.setItem("token_expires_in", expires_in);
+    }
+    
+    private static storeRefreshToken(refreshToken: string) : void{
+        localStorage.setItem("refresh_token", refreshToken);
+    }
+
+    public static GetLogoutUrl(): string {
+        const url = `https://${this._config.domain}.auth.${this._config.region}.amazoncognito.com/logout?`
+            .concat(`client_id=`, this._config.client_id)
+            .concat(`&logout_uri=`, 'http://localhost:3000')
+
+        return url;
+    }
+
 
     public static GetLoginUrl(): string {
         const pkce = pkceChallenge(128);
@@ -96,14 +180,12 @@ export default class Auth {
         }
 
         axios(options)
-            .then (resp => {
-                console.log(resp.data);
+            .then (resp => {         
+                this.storeRefreshToken(resp.data.refresh_token);
+                this.storeAccessToken(resp.data.access_token, resp.data.expires_in);
                 
-                localStorage.setItem("access_token", resp.data.access_token);
-                localStorage.setItem("refresh_token", resp.data.refresh_token)
-                // localStorage.setItem("token_expires_in", 3600)
-                window.location.href="http://localhost:3000/query"
-
+                // Todo:- relative redirect
+                window.location.href="http://localhost:3000/query";
             })
             .catch(err => {
                 console.log(err);

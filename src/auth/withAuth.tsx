@@ -8,9 +8,8 @@ export function withAuth<T> (WrappedComponent: ComponentType<T>) {
             super(hocProps);
         }
 
-        componentWillMount() {
-            // ToDo:- 
-            const activeUser = Auth.GetAuthedUser();
+        async componentWillMount() {
+            const activeUser = await Auth.GetAuthedUser();
             if(!activeUser.AccessToken) { 
                window.location.href = '/';
             }

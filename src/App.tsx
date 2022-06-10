@@ -1,18 +1,18 @@
 import image from './images/dmitry-ratushny-unsplash.jpg';
 import './App.css';
 import Query from './pages/query';
-import Login from './pages/Login';
+
 import { Route, Routes } from 'react-router-dom';
-import Auth from './auth/auth';
+import AuthBar from './components/NavBar';
 
 function App() {
 
   return (
     <div className="App">
+      <AuthBar />
       <header className="App-header">
         <img src={image} className="landing-image" alt="logo" />
       </header>
-      <Login />
         <Routes>
           <Route path="/query" element={<Query />} />
           
