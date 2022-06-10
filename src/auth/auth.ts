@@ -185,7 +185,7 @@ export default class Auth {
                 this.storeAccessToken(resp.data.access_token, resp.data.expires_in);
                 
                 // Todo:- relative redirect
-                window.location.href="http://localhost:3000/query";
+                window.location.href="http://localhost:3000";
             })
             .catch(err => {
                 console.log(err);

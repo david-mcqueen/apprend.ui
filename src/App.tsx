@@ -1,6 +1,6 @@
 import image from './images/dmitry-ratushny-unsplash.jpg';
 import './App.css';
-import Query from './pages/query';
+import Deck from './pages/deck';
 
 import { Route, Routes } from 'react-router-dom';
 import AuthBar from './components/NavBar';
@@ -14,7 +14,7 @@ function App() {
         <img src={image} className="landing-image" alt="logo" />
       </header>
         <Routes>
-          <Route path="/query" element={<Query />} />
+          <Route path="/deck" element={<Deck />} />
           
         </Routes>
     </div>
