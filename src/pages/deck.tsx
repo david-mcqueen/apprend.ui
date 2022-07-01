@@ -36,7 +36,7 @@ const Deck = () => {
           return {
               headers: {
               ...headers,
-              authorization: authedUser.AccessToken,
+              authorization: authedUser!.AccessToken,
               }
           }
         });

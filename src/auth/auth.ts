@@ -2,7 +2,6 @@ import pkceChallenge, { verifyChallenge } from "pkce-challenge";
 import axios from "axios";
 import qs from "qs";
 import jwtDecode from "jwt-decode";
-import { useNavigate } from "react-router";
 
 export type AuthedUser = {
     UserName: string;
@@ -130,7 +129,6 @@ export const GetLoginUrl = (): string => {
 export const ExchangeCodeForToken = (code: string) => {
     const codeVerifier = localStorage.getItem("code_verifier");
     const codeChallenge = localStorage.getItem("code_challenge");
-    const navigate = useNavigate();
 
     if (!(codeVerifier && codeChallenge) || !verifyChallenge(codeVerifier, codeChallenge)){
         throw Error("Error obtaining Token");
@@ -159,7 +157,7 @@ export const ExchangeCodeForToken = (code: string) => {
             storeRefreshToken(resp.data.refresh_token);
             storeAccessToken(resp.data.access_token, resp.data.expires_in);
             
-            navigate('/');
+            window.location.href = config.base_uri;
         })
         .catch(err => {
             console.log(err);
@@ -176,7 +174,7 @@ export const DestroyTokens = () => {
 const GetAuthedUser = async () => {
     const accessToken = localStorage.getItem('access_token');
         if (!accessToken){
-            throw new Error('Unauthorised');
+            return;
         }
         let decoded: jwtAuth = jwtDecode(accessToken);
 
