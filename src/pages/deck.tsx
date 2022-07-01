@@ -13,9 +13,15 @@ import { withAuth } from "../auth/withAuth";
 
 import './deck.scss';
 
+type Verb = {
+  group: string;
+  name: string;
+  translation: string;
+}
+
 const Deck = () => {
 
-    const [verbs, setVerbs] = useState<string>();
+    const [verbs, setVerbs] = useState<Verb[]>();
     const {deck} = useParams();
 
     useEffect(() => {
@@ -54,14 +60,25 @@ const Deck = () => {
                   }              
                 `
             })
-            .then(result => setVerbs(JSON.stringify(result.data)));
-    }, []);
+            .then(result => {
+              console.log(result);
+
+              const returnedVerbs = result?.data.getCategory.verbs;
+              setVerbs(returnedVerbs);
+            });
+    }, [deck]);
 
     return (
       <div className="deck">
-        {verbs}
+        {verbs?.map((verb: Verb) => (
+          <div>
+            <h1>{verb.name}</h1>
+            <h2>{verb.translation}</h2>
+            <h2>{verb.group}</h2>
+          </div>
+        ))}
       </div>
     )
-} 
+}
 
 export default withAuth(Deck);
