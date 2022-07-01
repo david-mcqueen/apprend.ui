@@ -1,31 +1,29 @@
-import { Component, ComponentType } from "react";
+import { Component, ComponentType, useEffect } from "react";
+import { useNavigate } from "react-router";
 import Auth from "./auth";
 
 export function withAuth<T> (WrappedComponent: ComponentType<T>) {
 
-    return class App extends Component {
-        constructor(hocProps: T){
-            super(hocProps);
+    return (hocProps: T) => {
+
+        const navigate = useNavigate();
+
+        const themeProps = {
+            name: "thing"
         }
 
-        async componentWillMount() {
-            const activeUser = await Auth.GetAuthedUser();
-            if(!activeUser.AccessToken) { 
-               window.location.href = '/';
-            }
-        }
+        useEffect(() => {
+            (async () => {
+                const activeUser = await Auth.GetAuthedUser();
+                debugger;
+                if (!activeUser){
+                    navigate('/');
+                }
+            })()
+        }, [])
 
-        getAuthedUser(): string {
-            return "abc";
-        }
-
-        render() {
-
-            const themeProps = {
-                name: "thing"
-            }
-
-            return <WrappedComponent {...(this.props as T)} {...themeProps}/>
-        }
+        return (
+            <WrappedComponent {...(hocProps as T)} {...themeProps}/>
+        )
     }
 }
