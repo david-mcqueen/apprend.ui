@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import Auth from "../auth/auth";
+import { ExchangeCodeForToken } from "../auth/auth";
 
 
 const Callback = () => {
@@ -14,9 +14,9 @@ const Callback = () => {
             throw Error("No code returned!")
         }
 
-        Auth.ExchangeCodeForToken(code);
+        ExchangeCodeForToken(code);
         
-    }, []);
+    }, [location.search]);
 
     return (<></>);
 }

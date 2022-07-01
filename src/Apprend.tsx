@@ -1,5 +1,3 @@
-import { FC } from "react";
-import ListDecks from "./components/ListDecks/ListDecks";
 import SideBar from "./components/SideBar";
 
 const Apprend = () => {

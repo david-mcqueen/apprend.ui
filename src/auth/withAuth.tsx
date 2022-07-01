@@ -1,6 +1,6 @@
-import { Component, ComponentType, useEffect } from "react";
+import { ComponentType, useEffect } from "react";
 import { useNavigate } from "react-router";
-import Auth from "./auth";
+import GetAuthedUser from "./auth";
 
 export function withAuth<T> (WrappedComponent: ComponentType<T>) {
 
@@ -14,13 +14,12 @@ export function withAuth<T> (WrappedComponent: ComponentType<T>) {
 
         useEffect(() => {
             (async () => {
-                const activeUser = await Auth.GetAuthedUser();
-                debugger;
+                const activeUser = await GetAuthedUser();
                 if (!activeUser){
                     navigate('/');
                 }
             })()
-        }, [])
+        }, [navigate])
 
         return (
             <WrappedComponent {...(hocProps as T)} {...themeProps}/>

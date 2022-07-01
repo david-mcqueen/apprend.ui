@@ -8,7 +8,7 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Auth from "../auth/auth";
+import GetAuthedUser from "../auth/auth";
 import { withAuth } from "../auth/withAuth";
 
 import './deck.scss';
@@ -30,7 +30,7 @@ const Deck = () => {
         });
 
         const authLink = setContext(async (_, { headers }) => {
-          const authedUser = await Auth.GetAuthedUser();
+          const authedUser = await GetAuthedUser();
           
           // return the headers to the context so httpLink can read them
           return {
