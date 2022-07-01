@@ -11,6 +11,8 @@ import { useParams } from "react-router-dom";
 import Auth from "../auth/auth";
 import { withAuth } from "../auth/withAuth";
 
+import './deck.scss';
+
 const Deck = () => {
 
     const [verbs, setVerbs] = useState<string>();
@@ -56,9 +58,9 @@ const Deck = () => {
     }, []);
 
     return (
-      <>
+      <div className="deck">
         {verbs}
-      </>
+      </div>
     )
 } 
 

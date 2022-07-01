@@ -1,0 +1,10 @@
+.list-item{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 10px;
+    border: 1px solid black;
+    
+    &:hover {
+        background: red;
+    }
+}

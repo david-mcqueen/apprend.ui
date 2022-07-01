@@ -4,19 +4,20 @@ import Deck from './pages/deck';
 
 import { Route, Routes } from 'react-router-dom';
 import AuthBar from './components/NavBar';
+import ListDecks from './Apprend';
+import Apprend from './Apprend';
+import { Component } from 'react';
 
 function App() {
 
   return (
     <div className="App">
       <AuthBar />
-      <header className="App-header">
-        <img src={image} className="landing-image" alt="logo" />
-      </header>
-        <Routes>
-          <Route path="/deck/:deck" element={<Deck />} />
-          
-        </Routes>
+      <Apprend />
+
+      <Routes>
+        <Route path="/deck/:deck" element={<Deck />} />
+      </Routes>
     </div>
   );
 }
