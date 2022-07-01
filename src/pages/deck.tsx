@@ -70,8 +70,8 @@ const Deck = () => {
 
     return (
       <div className="deck">
-        {verbs?.map((verb: Verb) => (
-          <div>
+        {verbs?.map((verb: Verb, i: number) => (
+          <div key={i}>
             <h1>{verb.name}</h1>
             <h2>{verb.translation}</h2>
             <h2>{verb.group}</h2>

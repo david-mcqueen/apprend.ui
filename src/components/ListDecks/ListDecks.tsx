@@ -9,8 +9,8 @@ const ListDecks: FC = () => {
 
     return (
         <div className="list-decks">
-            {decks.map((name: string) => {
-                return <ListItem name={name} />
+            {decks.map((name: string, i: number) => {
+                return <ListItem name={name} key={i}/>
             })}
         </div>
     )
