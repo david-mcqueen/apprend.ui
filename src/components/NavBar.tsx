@@ -1,27 +1,27 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Callback from "../pages/Callback";
-import Auth, { AuthedUser } from "../auth/auth";
+import { AuthedUser, DestroyTokens, GetLoginUrl, GetLogoutUrl } from "../auth/auth";
 import { useEffect, useState } from "react";
+import GetAuthedUser from "../auth/auth";
 
 const AuthBar = () => {
 
     const [auth, setAuth] = useState<AuthedUser>();
 
     const loginRedirect = () => {
-        window.location.href = Auth.GetLoginUrl()
+        window.location.href = GetLoginUrl()
     }
 
     const logoutRedirect = () => {
-        Auth.DestroyTokens();
-        window.location.href = Auth.GetLogoutUrl()
+        DestroyTokens();
+        window.location.href = GetLogoutUrl()
     }
 
     useEffect(() => {
-        Auth.GetAuthedUser()
-        .then((user: AuthedUser) => {
+        (async () => {
+            const user = await GetAuthedUser()
             setAuth(user);
-        });
-
+        })()
     }, [])
     
 

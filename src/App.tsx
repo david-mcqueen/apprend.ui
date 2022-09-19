@@ -1,22 +1,20 @@
-import image from './images/dmitry-ratushny-unsplash.jpg';
 import './App.css';
-import Query from './pages/query';
+import Deck from './pages/deck';
 
 import { Route, Routes } from 'react-router-dom';
 import AuthBar from './components/NavBar';
+import Apprend from './Apprend';
 
 function App() {
 
   return (
     <div className="App">
       <AuthBar />
-      <header className="App-header">
-        <img src={image} className="landing-image" alt="logo" />
-      </header>
-        <Routes>
-          <Route path="/query" element={<Query />} />
-          
-        </Routes>
+      <Apprend />
+      <Routes>
+        <Route path="/deck/:deck" element={<Deck />} />
+      </Routes>
+
     </div>
   );
 }
